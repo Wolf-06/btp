@@ -1,6 +1,8 @@
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
+RUN apt-get update && apt-get install -y iproute2
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -14,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run server.py when the container launches
-CMD ["python", "server.py"]
+CMD ["python", "edge_node.py"]

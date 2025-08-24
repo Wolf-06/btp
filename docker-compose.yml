@@ -1,58 +1,66 @@
-version: '3.8'
+networks:
+  lan-net:   #faster connection b/w device-edge
+    driver: bridge
+
+  wan-net:    #slower connection b/w server-edge 
+    driver: bridge
 
 services:
-  # The MQTT Broker
-  mosquitto:
-    image: eclipse-mosquitto:2
+# mqtt-broker:
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt
+    restart: unless-stopped
     networks:
-      - local-net
       - wan-net
+      - lan-net
     ports:
       - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosq/config:/mosquitto/config
+      - ./mosq/data:/mosq/data
+      - ./mosq/log:/mosq/log
 
-  # The Central Server
+  # edgeNode configuration
+  edge_node:
+    build: ./edgeNode
+    depends_on:
+      - mqtt
+    restart: on-failure
+    networks:
+      - wan-net
+      - lan-net
+    environment:
+      - MQTT_BROKER_HOST=mqtt
+      - EDGE_ID=edgeNode_1
+      - LOG_LEVEL=INFO
+      - DEVICE_PSK=my_super_secret_32_byte_aes_key!
+  #resources limit for edge note
+    # cpus: '0.50'
+    # memory: 256M
+
+  #server configuration
   server:
     build: ./server
+    depends_on:
+      - mqtt
     networks:
-      - wan-net
+      - lan-net
+    restart: on-failure
     environment:
-      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_HOST=mqtt
       - LOG_LEVEL=INFO
     volumes:
-      - ./server/server_data:/app/data # Persists the database
+      - ./server/server_data:/app/data
 
-  # The Edge Node
-  edge_node:
-    build: ./edge_node
-    networks:
-      - local-net
-      - wan-net
-    environment:
-      - MQTT_BROKER_HOST=mosquitto
-      - LOG_LEVEL=INFO
-      - EDGE_ID=edge_node_main_ward
-      # This is the pre-shared key for communicating with local devices
-      - DEVICE_PSK=my_super_secret_32_byte_aes_key!
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 256M
-
-  # This container adds latency and limits bandwidth on the wan-net
-  wan-emulator:
-    image: clumsy/clumsy
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - wan-net
-    command: --filter "not dst port 22" --latency 150 --latency-distro normal --bandwidth 2Mbps
-
-networks:
-  # Fast network for local communication (Device <-> Edge)
-  local-net:
-    driver: bridge
-
-  # Slower, impaired network for internet communication (Edge <-> Server)
-  wan-net:
-    driver: bridge
+    ##device configuration
+    device_simulator:
+      build: ./device
+      networks:
+        - local-net
+      depends_on:
+        - mqtt
+      environment:
+        - MQTT_BROKER_HOST=mqtt
+        - NUM_DEVICES=10

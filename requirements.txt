@@ -1,5 +1,0 @@
-paho-mqtt
-oqs
-pycrptodome
-psutils
-
