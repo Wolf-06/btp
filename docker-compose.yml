@@ -27,7 +27,7 @@ services:
     build: ./edgeNode
     depends_on:
       - mqtt
-    restart: on-failure
+    # restart: on-failure
     networks:
       - wan-net
       - lan-net
@@ -47,7 +47,7 @@ services:
       - mqtt
     networks:
       - lan-net
-    restart: on-failure
+    # restart: on-failure
     environment:
       - MQTT_BROKER_HOST=mqtt
       - LOG_LEVEL=INFO
@@ -55,12 +55,13 @@ services:
       - ./server/server_data:/app/data
 
     ##device configuration
-    device_simulator:
-      build: ./device
-      networks:
-        - local-net
-      depends_on:
-        - mqtt
-      environment:
-        - MQTT_BROKER_HOST=mqtt
-        - NUM_DEVICES=10
+  device:
+    build: ./device
+    networks:
+      - lan-net
+    depends_on:
+      - mqtt
+    environment:
+      - MQTT_BROKER_HOST=mqtt
+      - NUM_DEVICES=10
+      - DEVICE_PSK=my_super_secret_32_byte_aes_key!

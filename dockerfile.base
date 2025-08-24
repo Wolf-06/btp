@@ -1,0 +1,33 @@
+# Dockerfile.base
+# This file builds our reusable base image with liboqs pre-installed.
+
+FROM python:3.10-slim
+
+# 1. Install all build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    cmake \
+    ninja-build \
+    build-essential \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install Python dependencies needed for the wrapper
+RUN pip install paho-mqtt pycryptodome psutil
+
+# 3. Clone, build, and install liboqs and the Python wrapper
+# This is the slow part that will now be cached in our base image.
+RUN git clone --depth=1 https://github.com/open-quantum-safe/liboqs.git \
+    && cd liboqs \
+    && cmake -S . -B build -GNinja -DBUILD_SHARED_LIBS=ON \
+    && ninja -C build \
+    && ninja -C build install \
+    && cd .. \
+    && rm -rf liboqs \
+    && git clone --depth=1 https://github.com/open-quantum-safe/liboqs-python.git \
+    && cd liboqs-python \
+    && pip install . \
+    && cd .. \
+    && rm -rf liboqs-python
+
+# This image is now ready to be used by our application.
