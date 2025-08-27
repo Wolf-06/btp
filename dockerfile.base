@@ -13,8 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Install Python dependencies needed for the wrapper
-RUN pip install paho-mqtt pycryptodome psutil
-
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 # 3. Clone, build, and install liboqs and the Python wrapper
 # This is the slow part that will now be cached in our base image.
 RUN git clone --depth=1 https://github.com/open-quantum-safe/liboqs.git \
@@ -31,3 +30,5 @@ RUN git clone --depth=1 https://github.com/open-quantum-safe/liboqs.git \
     && rm -rf liboqs-python
 
 # This image is now ready to be used by our application.
+
+RUN pip install paho-mqtt pycryptodome psutil cryptography

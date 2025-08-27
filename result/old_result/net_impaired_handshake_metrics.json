@@ -1,0 +1,7 @@
+{
+  "handshake_start_time": 1756073750.0989184,
+  "pqc_handshake_latency_ms": 379.78267669677734,
+  "handshake_payload_size_bytes": 6139,
+  "response_payload_size_bytes": 6077,
+  "end_to_end_latencies": []
+}

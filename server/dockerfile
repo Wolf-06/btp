@@ -1,5 +1,5 @@
 FROM oqs-base:latest
 WORKDIR /app
-RUN apt-get update && apt-get install -y iproute2
-COPY . .
-CMD ["python", "server.py"]
+# RUN apt-get update && apt-get install -y iproute2
+COPY server.py  /app/
+CMD ["python", "-u","server.py"]

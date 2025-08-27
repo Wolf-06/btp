@@ -1,0 +1,13 @@
+
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+d1a6b7ff3b47   btp-edge_node-1   0.20%     16.84MiB / 256MiB     6.58%     546kB / 447kB     7.01MB / 143kB    2
+0065b8330e41   btp-server-1      0.17%     27.04MiB / 7.128GiB   0.37%     463kB / 136kB     30.9MB / 291kB    1
+e772e0244ef7   btp-device-1      0.29%     21.24MiB / 7.128GiB   0.29%     169kB / 402kB     13.1MB / 32.8kB   21
+3eb8b7e3f0e3   mqtt              0.08%     1.512MiB / 7.128GiB   0.02%     1.02MB / 1.11MB   5.47MB / 0B       1
+
+
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS 
+d1a6b7ff3b47   btp-edge_node-1   0.20%     16.84MiB / 256MiB     6.58%     546kB / 447kB     7.01MB / 143kB    2 
+0065b8330e41   btp-server-1      0.17%     27.04MiB / 7.128GiB   0.37%     463kB / 136kB     30.9MB / 291kB    1 
+e772e0244ef7   btp-device-1      0.29%     21.24MiB / 7.128GiB   0.29%     169kB / 402kB     13.1MB / 32.8kB   21
+3eb8b7e3f0e3   mqtt              0.08%     1.512MiB / 7.128GiB   0.02%     1.02MB / 1.11MB   5.47MB / 0B       1 
