@@ -23,36 +23,36 @@ services:
       - ./mosq/log:/mosq/log
 
   # edgeNode configuration
-  edge_node:
-    build: ./edgeNode
-    depends_on:
-      - mqtt
-    # restart: on-failure
-    networks:
-      - wan-net
-      - lan-net
-    cap_add:
-      - NET_ADMIN
-    # UPDATE THIS: This command now includes the network impairment logic
-    volumes:
-      - ./result:/app/results
-    # command: >
-      # sh -c "
-      #   sleep 5 &&
-      #   echo 'Applying 150ms latency with 20ms jitter to Edge Node network...' &&
-      #   tc qdisc add dev eth0 root netem delay 150ms 20ms distribution normal &&
-      #   echo 'Edge Node is up, starting application...' &&
-      #   python edge_node.py
-      # "
-    environment:
-      - MQTT_BROKER_HOST=mqtt
-      - EDGE_ID=edgeNode_1
-      - LOG_LEVEL=INFO
-      - CRYPTO_MODE="ECC"  # use PQC or ECC 
-      - DEVICE_PSK=my_super_secret_32_byte_aes_key!
-  #resources limit for edge note
-    cpus: '0.50'
-    mem_limit: 256M
+  # edge_node:
+  #   build: ./edgeNode
+  #   depends_on:
+  #     - mqtt
+  #   # restart: on-failure
+  #   networks:
+  #     - wan-net
+  #     - lan-net
+  #   cap_add:
+  #     - NET_ADMIN
+  #   # UPDATE THIS: This command now includes the network impairment logic
+  #   volumes:
+  #     - ./result:/app/results
+  #   # command: >
+  #     # sh -c "
+  #     #   sleep 5 &&
+  #     #   echo 'Applying 150ms latency with 20ms jitter to Edge Node network...' &&
+  #     #   tc qdisc add dev eth0 root netem delay 150ms 20ms distribution normal &&
+  #     #   echo 'Edge Node is up, starting application...' &&
+  #     #   python edge_node.py
+  #     # "
+  #   environment:
+  #     - MQTT_BROKER_HOST=mqtt
+  #     - EDGE_ID=edgeNode_1
+  #     - LOG_LEVEL=INFO
+  #     - CRYPTO_MODE="ECC"  # use PQC or ECC 
+  #     - DEVICE_PSK=my_super_secret_32_byte_aes_key!
+  # #resources limit for edge note
+  #   cpus: '0.50'
+  #   mem_limit: 256M
 
   #server configuration
   server:
@@ -71,13 +71,13 @@ services:
       - ./result:/app/results
 
     ##device configuration
-  device:
-    build: ./device
-    networks:
-      - lan-net
-    depends_on:
-      - mqtt
-    environment:
-      - MQTT_BROKER_HOST=mqtt
-      - NUM_DEVICES=10
-      - DEVICE_PSK=my_super_secret_32_byte_aes_key!
+  # device:
+  #   build: ./device
+  #   networks:
+  #     - lan-net
+  #   depends_on:
+  #     - mqtt
+  #   environment:
+  #     - MQTT_BROKER_HOST=mqtt
+  #     - NUM_DEVICES=10
+  #     - DEVICE_PSK=my_super_secret_32_byte_aes_key!

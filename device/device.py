@@ -125,7 +125,6 @@ if __name__ == "__main__":
     ]
 
     threads = []
-    device_counter = 0
     log.info("--- Starting Heterogeneous IoT Device Simulations (Press Ctrl+C to stop) ---")
 
     try:
@@ -136,19 +135,17 @@ if __name__ == "__main__":
                 log.warning(f"Unknown profile for device type '{device_type}', skipping.")
                 continue
 
-            # copy base_profile once per spec to avoid mutating global
             for i in range(device_spec["count"]):
                 # Prepare a thread-local copy of profile and add type to it
                 profile_copy = dict(base_profile)
                 profile_copy["type"] = device_type
 
                 userdata = {"message_counter": 0}
-                thread = threading.Thread(target=device_thread, args=(device_counter, profile_copy, userdata))
+                # Use i as device_id for each device type, so IDs are unique per type
+                thread = threading.Thread(target=device_thread, args=(i, profile_copy, userdata))
                 thread.daemon = True
                 threads.append(thread)
                 thread.start()
-
-                device_counter += 1
                 time.sleep(0.2)  # Stagger startups
 
         # Main thread waits until Ctrl+C
